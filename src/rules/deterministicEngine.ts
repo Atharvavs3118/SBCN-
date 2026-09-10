@@ -668,7 +668,7 @@ function calculateExposureMatrix(profile: ProfileState, items: ComplianceItem[])
 
 export const PRESET_COMPANY_PROFILES: Record<string, Partial<ProfileState>> = {
   'early_saas': {
-    businessName: 'Vanguard AI Technologies',
+    businessName: 'Apex Cloud Solutions',
     entityType: 'Private Limited',
     sector: 'SaaS & Cloud Software',
     state: 'Karnataka (Bengaluru)',

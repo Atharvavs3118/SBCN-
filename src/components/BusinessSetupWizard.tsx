@@ -195,7 +195,7 @@ export const BusinessSetupWizard: React.FC<BusinessSetupWizardProps> = ({
                   type="text"
                   value={formData.businessName}
                   onChange={(e) => updateForm({ businessName: e.target.value })}
-                  placeholder="e.g. Vanguard AI Innovations"
+                  placeholder="e.g. Acme Innovations"
                   className={`w-full rounded-xl border p-3 text-sm font-semibold transition focus:outline-none ${
                     isDark
                       ? 'border-slate-700 bg-slate-800 text-white focus:border-blue-500'

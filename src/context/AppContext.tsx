@@ -89,14 +89,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [founderName, setFounderName] = useState<string>(() => {
-    return localStorage.getItem('aura_founder_name') || 'Atharva Sankhe';
+    return localStorage.getItem('aura_founder_name') || '';
   });
 
   // Current View: By default as requested: "Firstly the landing page will open"
   const [currentView, setCurrentView] = useState<AppView>('LANDING');
 
   const loginAsFounder = (email?: string, name?: string) => {
-    const fName = name || 'Atharva Sankhe';
+    const fName = name || (email ? email.split('@')[0] : '') || 'Founder';
     setIsAuthenticated(true);
     setFounderName(fName);
     try {

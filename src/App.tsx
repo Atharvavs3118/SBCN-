@@ -30,7 +30,7 @@ const STORAGE_KEY_PROFILE = 'aura_compliance_profile_v1';
 const STORAGE_KEY_STATUSES = 'aura_compliance_statuses_v1';
 
 const DEFAULT_PROFILE: ProfileState = {
-  businessName: 'Vanguard AI Technologies',
+  businessName: '',
   entityType: 'Private Limited',
   sector: 'SaaS & Cloud Software',
   headcountTier: '10–19',
@@ -88,10 +88,12 @@ function AppInner() {
   const [selectedItemForAI, setSelectedItemForAI] = useState<ComplianceItem | null>(null);
   const [authDefaultRegister, setAuthDefaultRegister] = useState(false);
 
-  // Sync to local storage
+  // Sync to local storage only if business has been explicitly configured
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(profile));
+      if (profile.businessName && profile.businessName.trim() !== '') {
+        localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(profile));
+      }
     } catch (e) {
       console.error('Failed to save profile', e);
     }
@@ -161,16 +163,17 @@ function AppInner() {
 
   // 2. The redirect to login page on any button leaving 'how it works' button
   if (currentView === 'LOGIN') {
+    const hasDeviceProfile = Boolean(localStorage.getItem(STORAGE_KEY_PROFILE) && profile.businessName && profile.businessName.trim() !== '');
     return (
       <AuthView
-        existingCompanyName={profile.businessName}
-        hasExistingProfile={Boolean(profile.businessName)}
+        existingCompanyName={hasDeviceProfile ? profile.businessName : ''}
+        hasExistingProfile={hasDeviceProfile}
         initialRegisterMode={authDefaultRegister}
         onSuccess={(isExistingCompany = true, selectedCompanyName) => {
           if (selectedCompanyName) {
             setProfile((prev) => ({ ...prev, businessName: selectedCompanyName }));
           }
-          if (isExistingCompany) {
+          if (isExistingCompany && (selectedCompanyName || (hasDeviceProfile && profile.businessName))) {
             // User logged in with existing company - avoid asking for new company name!
             // Route straight to Dashboard directly without asking for new company name or setup
             setCurrentView('DASHBOARD');

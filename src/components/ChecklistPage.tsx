@@ -188,7 +188,7 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
 
   // Checkpoint 1: Profile & Logo state
   const [logoPreview, setLogoPreview] = useState<string>(profile.logoUrl || '');
-  const [businessName, setBusinessName] = useState(profile.businessName || 'Vanguard Technologies');
+  const [businessName, setBusinessName] = useState(profile.businessName || '');
   const [selectedMonogram, setSelectedMonogram] = useState('Shield');
 
   // Checkpoint 2: Application of Certificates state

@@ -415,11 +415,17 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                 className="flex items-center gap-3 rounded-xl p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800/70 transition"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#091024] dark:bg-blue-600 text-white font-bold text-xs ring-2 ring-slate-200 dark:ring-slate-700">
-                  AS
+                  {(founderName || 'Founder')
+                    .split(' ')
+                    .filter(Boolean)
+                    .map((n) => n[0])
+                    .join('')
+                    .slice(0, 2)
+                    .toUpperCase() || 'FD'}
                 </div>
                 <div className="hidden sm:block text-left">
                   <div className="text-xs font-bold text-slate-800 dark:text-white leading-tight">
-                    {founderName || 'Atharva Sankhe'}
+                    {founderName || 'Business Founder'}
                   </div>
                   <div className="text-[10px] font-medium text-slate-500 dark:text-slate-400">
                     Business Admin
@@ -432,7 +438,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
               {isProfileMenuOpen && (
                 <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 shadow-xl z-50 text-xs text-slate-700 dark:text-slate-200 animate-in fade-in zoom-in-95">
                   <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
-                    <p className="font-bold text-slate-900 dark:text-white">{founderName || 'Atharva Sankhe'}</p>
+                    <p className="font-bold text-slate-900 dark:text-white">{founderName || 'Business Founder'}</p>
                     <p className="text-[11px] text-slate-400">{profile.businessName}</p>
                   </div>
                   <button
@@ -511,7 +517,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                     <div className="space-y-6">
                       <div>
                         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                          Welcome back, {founderName ? founderName.split(' ')[0] : 'Atharva'}
+                          Welcome back, {founderName ? founderName.split(' ')[0] : 'Founder'}
                         </h1>
                         <p className="text-xs sm:text-sm text-slate-300 mt-1">
                           Here's your business compliance overview

@@ -30,7 +30,7 @@ STATUS: Paid in full via NEFT on 22-Aug-2025 (UTR: N283912093)`,
     type: 'lease_deed',
     typeName: 'Registered Commercial Lease Agreement',
     fileSize: '2.8 MB',
-    previewText: `THIS INDENTURE OF LEASE entered into on this 1st day of July 2025 between K Raheja Realty Corp (Lessor) and Vanguard AI Technologies Pvt Ltd (Lessee).
+    previewText: `THIS INDENTURE OF LEASE entered into on this 1st day of July 2025 between K Raheja Realty Corp (Lessor) and Acme Enterprise Technologies Pvt Ltd (Lessee).
 PREMISES: Office Suite 402, 4th Floor, Tower B, Express Trade Towers, BKC, Bandra East, Mumbai 400051.
 STAMP DUTY: e-Challan GRAS No. MH0028919283 paid ₹48,500 under Article 36A of Maharashtra Stamp Act.
 LANDLORD NOC: Clause 14 grants explicit, unconditional consent to Lessee to register registered office and obtain GST, FSSAI, Shop & Establishment, and EPFO establishments without separate objection.`,

@@ -23,6 +23,16 @@ import { useApp } from '../context/AppContext';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageSelector } from './LanguageSelector';
 
+const STORAGE_DEVICE_CREDS = 'sbcn_device_saved_auth_v1';
+
+interface DeviceCredentials {
+  email: string;
+  fullName: string;
+  companyName?: string;
+  rememberMe: boolean;
+  savedAt: number;
+}
+
 interface AuthViewProps {
   onSuccess: (isExistingCompany?: boolean, companyName?: string) => void;
   onBackToLanding: () => void;
@@ -34,37 +44,168 @@ interface AuthViewProps {
 export const AuthView: React.FC<AuthViewProps> = ({
   onSuccess,
   onBackToLanding,
-  existingCompanyName = 'Vanguard Technologies',
-  hasExistingProfile = true,
+  existingCompanyName = '',
+  hasExistingProfile = false,
   initialRegisterMode = false,
 }) => {
   const { isDark, t, loginAsFounder } = useApp();
+
+  // Retrieve credentials ONLY if this specific device previously opted to save them
+  const [deviceSavedCreds, setDeviceSavedCreds] = useState<DeviceCredentials | null>(() => {
+    try {
+      const item = localStorage.getItem(STORAGE_DEVICE_CREDS);
+      if (item) {
+        const parsed = JSON.parse(item);
+        if (parsed && typeof parsed.email === 'string' && parsed.email.trim()) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error('Error reading saved credentials on device:', e);
+    }
+    return null;
+  });
+
   const [isRegister, setIsRegister] = useState(initialRegisterMode);
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState<boolean>(() => Boolean(deviceSavedCreds?.rememberMe));
 
-  // Form states
-  const [email, setEmail] = useState('atharvasankhe004@gmail.com');
-  const [password, setPassword] = useState('••••••••••••');
-  const [fullName, setFullName] = useState('Atharva Sankhe');
-  const [companyName, setCompanyName] = useState(existingCompanyName || 'Vanguard Technologies');
+  // Form states: strictly BLANK by default for all new devices / browsers.
+  // ONLY populated if THIS device previously saved credentials in its localStorage with rememberMe.
+  const [email, setEmail] = useState<string>(() => (deviceSavedCreds?.rememberMe ? deviceSavedCreds.email : ''));
+  const [password, setPassword] = useState<string>('');
+  const [fullName, setFullName] = useState<string>(() => (deviceSavedCreds?.rememberMe ? deviceSavedCreds.fullName : ''));
+  const [companyName, setCompanyName] = useState<string>('');
+
+  // Google Sign-In state modal
+  const [showGoogleModal, setShowGoogleModal] = useState<boolean>(false);
+  const [googleEmailInput, setGoogleEmailInput] = useState<string>('');
+  const [googleNameInput, setGoogleNameInput] = useState<string>('');
+
+  const handleClearDeviceCredentials = () => {
+    try {
+      localStorage.removeItem(STORAGE_DEVICE_CREDS);
+    } catch (e) {
+      console.error(e);
+    }
+    setDeviceSavedCreds(null);
+    setEmail('');
+    setPassword('');
+    setFullName('');
+    setCompanyName('');
+    setRememberMe(false);
+  };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    loginAsFounder(email, fullName);
-    if (!isRegister) {
-      // Logging in with existing company - DO NOT ask for new company name
-      onSuccess(true, companyName || existingCompanyName);
+    if (!email.trim()) {
+      alert('Please enter your email address to log in.');
+      return;
+    }
+    if (!password.trim()) {
+      alert('Please enter your password.');
+      return;
+    }
+
+    const resolvedName = fullName.trim() || email.split('@')[0] || 'Founder';
+    loginAsFounder(email.trim(), resolvedName);
+
+    // Save or clear credentials strictly on THIS device
+    if (rememberMe) {
+      try {
+        localStorage.setItem(
+          STORAGE_DEVICE_CREDS,
+          JSON.stringify({
+            email: email.trim(),
+            fullName: resolvedName,
+            companyName: companyName.trim() || existingCompanyName || '',
+            rememberMe: true,
+            savedAt: Date.now(),
+          })
+        );
+      } catch (err) {
+        console.error('Failed to save device credentials:', err);
+      }
     } else {
+      try {
+        localStorage.removeItem(STORAGE_DEVICE_CREDS);
+      } catch (err) {
+        console.error('Failed to clear device credentials:', err);
+      }
+    }
+
+    const finalCompany = companyName.trim() || existingCompanyName;
+    if (!isRegister && finalCompany) {
+      // Logging in with existing company - DO NOT ask for new company name
+      onSuccess(true, finalCompany);
+    } else if (isRegister && finalCompany) {
       // Registering a brand new company
-      onSuccess(false, companyName);
+      onSuccess(false, finalCompany);
+    } else {
+      // Fresh user logging in without prior company setup on this device
+      onSuccess(false, '');
     }
   };
 
-  const handleQuickDemo = () => {
-    loginAsFounder('atharvasankhe004@gmail.com', 'Atharva Sankhe');
-    // Existing company fast login
-    onSuccess(true, existingCompanyName || 'Vanguard Technologies');
+  const handleGoogleSignInClick = () => {
+    if (email.trim()) {
+      // Use the email already provided in the input field
+      const resolvedName = fullName.trim() || email.split('@')[0] || 'Google User';
+      loginAsFounder(email.trim(), resolvedName);
+      if (rememberMe) {
+        try {
+          localStorage.setItem(
+            STORAGE_DEVICE_CREDS,
+            JSON.stringify({
+              email: email.trim(),
+              fullName: resolvedName,
+              companyName: companyName.trim() || existingCompanyName || '',
+              rememberMe: true,
+              savedAt: Date.now(),
+            })
+          );
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      const finalCompany = companyName.trim() || existingCompanyName;
+      onSuccess(Boolean(finalCompany), finalCompany);
+    } else {
+      setShowGoogleModal(true);
+    }
+  };
+
+  const handleGoogleModalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!googleEmailInput.trim()) return;
+    const resolvedName = googleNameInput.trim() || googleEmailInput.split('@')[0] || 'Google User';
+    loginAsFounder(googleEmailInput.trim(), resolvedName);
+
+    if (rememberMe) {
+      try {
+        localStorage.setItem(
+          STORAGE_DEVICE_CREDS,
+          JSON.stringify({
+            email: googleEmailInput.trim(),
+            fullName: resolvedName,
+            companyName: companyName.trim() || existingCompanyName || '',
+            rememberMe: true,
+            savedAt: Date.now(),
+          })
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    setShowGoogleModal(false);
+    const finalCompany = companyName.trim() || existingCompanyName;
+    onSuccess(Boolean(finalCompany), finalCompany);
+  };
+
+  const handleSampleGuestLogin = () => {
+    loginAsFounder('guest.founder@compliance-demo.in', 'Guest Founder');
+    // Generic demo workspace - not linked to any personal user or device
+    onSuccess(true, 'Demo Innovations Pvt Ltd');
   };
 
   return (
@@ -461,24 +602,30 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
           {/* Main Auth Form */}
           <form onSubmit={handleLoginSubmit} className="space-y-4">
-            {!isRegister && (
-              <div className="rounded-xl border border-blue-100 dark:border-blue-900/60 bg-blue-50/70 dark:bg-blue-950/40 p-3 flex items-center justify-between">
+            {/* Device-specific saved account banner: shown ONLY if this specific device previously saved credentials with remember me */}
+            {deviceSavedCreds && deviceSavedCreds.rememberMe && (
+              <div className="rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/80 dark:bg-blue-950/40 p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white font-bold text-xs">
-                    {(existingCompanyName || companyName).slice(0, 2).toUpperCase()}
+                    {(deviceSavedCreds.fullName || deviceSavedCreds.email).slice(0, 2).toUpperCase()}
                   </div>
-                  <div>
+                  <div className="text-left">
                     <span className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 uppercase tracking-wider block">
-                      Active Business Entity
+                      Saved On This Device
                     </span>
                     <span className="text-xs font-bold text-slate-900 dark:text-white">
-                      {existingCompanyName || companyName}
+                      {deviceSavedCreds.email}
                     </span>
                   </div>
                 </div>
-                <span className="rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 text-[10px] font-bold">
-                  Existing Entity
-                </span>
+                <button
+                  type="button"
+                  onClick={handleClearDeviceCredentials}
+                  className="text-[11px] font-semibold text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 underline transition cursor-pointer"
+                  title="Remove saved credentials from this device"
+                >
+                  Use Another Account
+                </button>
               </div>
             )}
 
@@ -500,7 +647,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Atharva Sankhe"
+                      placeholder="e.g. Rahul Sharma"
                       className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80 py-2.5 pl-10 pr-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/15 transition"
                     />
                   </div>
@@ -522,7 +669,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                       required
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
-                      placeholder="e.g. Vanguard Technologies"
+                      placeholder="e.g. Acme Tech Solutions"
                       className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80 py-2.5 pl-10 pr-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/15 transition"
                     />
                   </div>
@@ -546,7 +693,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
+                  placeholder="name@company.com"
                   className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80 py-2.5 pl-10 pr-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/15 transition"
                 />
               </div>
@@ -628,7 +775,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
             <motion.button
               id="auth-google-button"
               type="button"
-              onClick={handleQuickDemo}
+              onClick={handleGoogleSignInClick}
               whileHover={{ scale: 1.005 }}
               whileTap={{ scale: 0.985 }}
               className="w-full inline-flex items-center justify-center gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 shadow-2xs transition cursor-pointer"
@@ -654,14 +801,14 @@ export const AuthView: React.FC<AuthViewProps> = ({
               <span>Continue with Google</span>
             </motion.button>
 
-            {/* Quick Demo Founder Shortcut */}
+            {/* Explore Sample Workspace (Guest Mode) - strictly generic, no personal account shared */}
             <button
               id="auth-quick-demo-button"
               type="button"
-              onClick={handleQuickDemo}
-              className="w-full text-center text-[11px] font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition py-1 cursor-pointer"
+              onClick={handleSampleGuestLogin}
+              className="w-full text-center text-[11px] font-medium text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition py-1 cursor-pointer"
             >
-              Demo: Sign in directly as Atharva Sankhe (Business Admin)
+              Explore Sample Workspace (Guest Mode)
             </button>
           </form>
 
@@ -698,6 +845,107 @@ export const AuthView: React.FC<AuthViewProps> = ({
           © 2026 SBCN • Smart Business Compliance Navigation
         </div>
       </div>
+
+      {/* Google Sign-In Account Selector Modal */}
+      {showGoogleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-sm rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1526] p-6 shadow-2xl text-slate-900 dark:text-white"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <svg className="h-5 w-5" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+                  />
+                </svg>
+                <span className="text-sm font-bold">Sign in with Google</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowGoogleModal(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleGoogleModalSubmit} className="mt-4 space-y-3.5">
+              <div>
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  Google Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={googleEmailInput}
+                  onChange={(e) => setGoogleEmailInput(e.target.value)}
+                  placeholder="your.email@gmail.com"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 py-2.5 px-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  Account Full Name
+                </label>
+                <input
+                  type="text"
+                  value={googleNameInput}
+                  onChange={(e) => setGoogleNameInput(e.target.value)}
+                  placeholder="Your Name (optional)"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 py-2.5 px-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-600 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 pt-1">
+                <input
+                  type="checkbox"
+                  id="google-remember"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-blue-600 accent-blue-600"
+                />
+                <label htmlFor="google-remember" className="cursor-pointer">
+                  Remember this account on this device
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowGoogleModal(false)}
+                  className="flex-1 rounded-xl border border-slate-200 dark:border-slate-800 py-2.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 rounded-xl bg-blue-600 hover:bg-blue-700 py-2.5 text-xs font-semibold text-white transition shadow-sm cursor-pointer"
+                >
+                  Continue
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 };
