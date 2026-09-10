@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with business ownership credentials and metadata",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "businessName": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "email", "businessName"]
+    },
+    "OnboardingChecklist": {
+      "title": "OnboardingChecklist",
+      "description": "Post-questionnaire 4-checkpoint statutory onboarding compliance state",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "businessName": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "sector": { "type": "string" },
+        "state": { "type": "string" },
+        "city": { "type": "string" },
+        "currentCheckpoint": { "type": "number" },
+        "isCompleted": { "type": "boolean" },
+        "gstNumber": { "type": "string" },
+        "gstVerified": { "type": "boolean" },
+        "gstVerificationDetails": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "businessName", "currentCheckpoint", "isCompleted"]
+    },
+    "GstAuditRecord": {
+      "title": "GstAuditRecord",
+      "description": "Gemini AI verified statutory certificate and GSTIN check",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "gstNumber": { "type": "string" },
+        "businessName": { "type": "string" },
+        "isValid": { "type": "boolean" },
+        "riskLevel": { "type": "string" },
+        "auditSummary": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["userId", "gstNumber", "isValid", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Root user profile document"
+    },
+    "/users/{userId}/checklists/{checklistId}": {
+      "schema": "OnboardingChecklist",
+      "description": "User specific statutory onboarding checklist"
+    },
+    "/users/{userId}/verifications/{verificationId}": {
+      "schema": "GstAuditRecord",
+      "description": "AI verified GSTIN records"
+    }
+  }
+}

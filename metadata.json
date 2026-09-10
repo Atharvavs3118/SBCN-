@@ -1,0 +1,6 @@
+{
+  "name": "SBCN - Smart Business Compliance Navigation",
+  "description": "Smart Business Compliance Navigation - Personalized statutory roadmap, risk & readiness scoring, and document checklists for Indian businesses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function for user authentication
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Root user document
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isOwner(userId) && isValidId(userId);
+      allow update: if isOwner(userId) && isValidId(userId);
+      allow delete: if isOwner(userId);
+
+      // Checklists subcollection
+      match /checklists/{checklistId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(checklistId);
+        allow update: if isOwner(userId) && isValidId(checklistId);
+        allow delete: if isOwner(userId);
+      }
+
+      // Verifications subcollection
+      match /verifications/{verificationId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(verificationId);
+        allow update: if isOwner(userId) && isValidId(verificationId);
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // Connection health check collection
+    match /test/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}
