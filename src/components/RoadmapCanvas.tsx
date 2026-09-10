@@ -105,7 +105,7 @@ export const RoadmapCanvas: React.FC<RoadmapCanvasProps> = ({
   const getPhaseBadgeColor = (phase: number) => {
     switch (phase) {
       case 1:
-        return 'bg-[#5B061E]/10 text-[#5B061E] border-[#5B061E]/20';
+        return 'bg-[#5B061E]/10 dark:bg-cyan-950/60 text-[#5B061E] dark:text-cyan-300 border-[#5B061E]/20 dark:border-cyan-800/50';
       case 2:
         return 'bg-[#064E3B]/10 text-[#064E3B] border-[#064E3B]/20';
       case 3:
@@ -120,7 +120,7 @@ export const RoadmapCanvas: React.FC<RoadmapCanvasProps> = ({
   const getObligationPill = (type: ComplianceItem['obligationType']) => {
     switch (type) {
       case 'Mandatory':
-        return 'bg-[#5B061E] text-white';
+        return 'bg-[#5B061E] dark:bg-cyan-600 text-white';
       case 'Conditional':
         return 'bg-[#D97706] text-white';
       case 'Optional':
@@ -448,10 +448,10 @@ export const RoadmapCanvas: React.FC<RoadmapCanvasProps> = ({
                   )}
 
                   {/* Non-compliance penalty risk callout */}
-                  <div className="mt-2 flex items-start gap-2 rounded-lg border border-[#FDF2F4] bg-[#FDF2F4]/80 p-2.5 text-xs text-[#9B153B]">
-                    <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#5B061E]" />
+                  <div className="mt-2 flex items-start gap-2 rounded-lg border border-[#FDF2F4] dark:border-cyan-800/60 bg-[#FDF2F4]/80 dark:bg-cyan-950/40 p-2.5 text-xs text-[#9B153B] dark:text-cyan-300">
+                    <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#5B061E] dark:text-cyan-400" />
                     <div className="flex-1">
-                      <strong className="font-semibold text-[#5B061E]">{t('penaltyExposure', 'Statutory Penalty Exposure:')}</strong>{' '}
+                      <strong className="font-semibold text-[#5B061E] dark:text-cyan-300">{t('penaltyExposure', 'Statutory Penalty Exposure:')}</strong>{' '}
                       {item.penaltyRisk}
                     </div>
                   </div>
@@ -461,7 +461,7 @@ export const RoadmapCanvas: React.FC<RoadmapCanvasProps> = ({
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => toggleExpand(item.id)}
-                        className="flex items-center gap-1 font-medium text-[#5B061E] hover:underline"
+                        className="flex items-center gap-1 font-medium text-[#5B061E] dark:text-cyan-400 hover:underline"
                       >
                         <span>{isExpanded ? 'Hide Compliance Specs' : `View Requirements & Checklist (${item.checklist.length} docs)`}</span>
                         {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -478,7 +478,7 @@ export const RoadmapCanvas: React.FC<RoadmapCanvasProps> = ({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onAskAIAboutItem(item)}
-                        className="flex items-center gap-1 rounded bg-[#FDF2F4] px-2 py-1 text-[11px] font-semibold text-[#5B061E] transition hover:bg-[#5B061E] hover:text-white"
+                        className="flex items-center gap-1 rounded bg-[#FDF2F4] dark:bg-cyan-950/60 px-2 py-1 text-[11px] font-semibold text-[#5B061E] dark:text-cyan-300 transition hover:bg-[#5B061E] dark:hover:bg-cyan-600 hover:text-white"
                         title="Consult AI about this statute"
                       >
                         <Sparkles className="h-3 w-3" />

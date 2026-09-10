@@ -47,14 +47,14 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
       {/* Dossier Container */}
-      <div className="my-8 flex w-full max-w-4xl flex-col rounded-2xl border border-[#E5E7EB] bg-white luxury-shadow overflow-hidden">
+      <div className="my-8 flex w-full max-w-4xl flex-col rounded-2xl border border-[#E5E7EB] dark:border-slate-800 bg-white dark:bg-[#0b101d] luxury-shadow overflow-hidden">
         {/* Floating Top Control Bar (Hidden on print) */}
-        <div className="no-print flex items-center justify-between border-b border-[#E5E7EB] bg-[#FBFBFA] px-6 py-4">
+        <div className="no-print flex items-center justify-between border-b border-[#E5E7EB] dark:border-slate-800 bg-[#FBFBFA] dark:bg-slate-900 px-6 py-4">
           <div className="flex items-center gap-2">
-            <span className="font-serif text-base font-bold text-[#5B061E]">
+            <span className="font-serif text-base font-bold text-[#5B061E] dark:text-cyan-400">
               Executive Regulatory Dossier
             </span>
-            <span className="rounded bg-[#5B061E]/10 px-2 py-0.5 text-[10px] font-bold text-[#5B061E] uppercase">
+            <span className="rounded bg-[#5B061E]/10 dark:bg-cyan-950/60 px-2 py-0.5 text-[10px] font-bold text-[#5B061E] dark:text-cyan-300 uppercase">
               Official Briefing
             </span>
           </div>
@@ -63,23 +63,23 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({
             <button
               id="dossier-export-csv-btn"
               onClick={() => exportComplianceRoadmapToCSV(applicableItems, profile.businessName, 'Executive Dossier Export')}
-              className="flex items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-white px-3 py-1.5 text-xs font-semibold text-[#1E1E24] shadow-2xs transition hover:border-[#064E3B] hover:bg-[#F0FDF4] hover:text-[#064E3B]"
+              className="flex items-center gap-1.5 rounded-lg border border-[#E5E7EB] dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-[#1E1E24] dark:text-slate-200 shadow-2xs transition hover:border-[#064E3B] hover:bg-[#F0FDF4] hover:text-[#064E3B]"
               title="Download full statutory obligations as CSV spreadsheet"
             >
-              <FileSpreadsheet className="h-3.5 w-3.5 text-[#064E3B]" />
+              <FileSpreadsheet className="h-3.5 w-3.5 text-[#064E3B] dark:text-emerald-400" />
               <span>Export CSV</span>
             </button>
             <button
               id="dossier-print-btn"
               onClick={handlePrint}
-              className="flex items-center gap-1.5 rounded-lg bg-[#5B061E] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition hover:bg-[#420415]"
+              className="flex items-center gap-1.5 rounded-lg bg-[#5B061E] dark:bg-cyan-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition hover:bg-[#420415] dark:hover:bg-cyan-500"
             >
               <Printer className="h-3.5 w-3.5" />
               <span>Print / Save as PDF</span>
             </button>
             <button
               onClick={onClose}
-              className="rounded-lg p-1.5 text-[#9CA3AF] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
+              className="rounded-lg p-1.5 text-[#9CA3AF] dark:text-slate-400 transition hover:bg-[#F3F4F6] dark:hover:bg-slate-800 hover:text-[#111827] dark:hover:text-white"
             >
               <X className="h-5 w-5" />
             </button>
@@ -87,19 +87,19 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({
         </div>
 
         {/* Printable Executive Dossier Document */}
-        <div className="p-8 sm:p-12 text-[#1E1E24] space-y-8 bg-white">
+        <div className="p-8 sm:p-12 text-[#1E1E24] dark:text-slate-100 space-y-8 bg-white dark:bg-[#0b101d]">
           {/* Institutional Header Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b-2 border-[#5B061E] pb-6 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b-2 border-[#5B061E] dark:border-cyan-500 pb-6 gap-4">
             <div>
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#5B061E] text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#5B061E] dark:bg-cyan-600 text-white">
                   <span className="font-serif text-xl font-bold">A</span>
                 </div>
                 <div>
-                  <h1 className="font-serif text-2xl font-bold tracking-tight text-[#5B061E] sm:text-3xl">
+                  <h1 className="font-serif text-2xl font-bold tracking-tight text-[#5B061E] dark:text-cyan-400 sm:text-3xl">
                     AURA COMPLIANCE NAVIGATOR
                   </h1>
-                  <p className="text-xs tracking-wider text-[#6B7280] uppercase">
+                  <p className="text-xs tracking-wider text-[#6B7280] dark:text-slate-400 uppercase">
                     Statutory & Regulatory Governance Master Dossier
                   </p>
                 </div>
@@ -107,15 +107,15 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({
             </div>
 
             <div className="text-right text-xs">
-              <div className="font-mono text-[#4B5563]">Dossier Ref: AUR-{Date.now().toString().slice(-6)}</div>
-              <div className="text-[#6B7280] mt-0.5">Date of Assessment: {currentDate}</div>
-              <div className="text-[#065F46] font-semibold mt-0.5">Statutory FY: 2025–26</div>
+              <div className="font-mono text-[#4B5563] dark:text-slate-400">Dossier Ref: AUR-{Date.now().toString().slice(-6)}</div>
+              <div className="text-[#6B7280] dark:text-slate-400 mt-0.5">Date of Assessment: {currentDate}</div>
+              <div className="text-[#065F46] dark:text-emerald-400 font-semibold mt-0.5">Statutory FY: 2025–26</div>
             </div>
           </div>
 
           {/* Section 1: Corporate Profile Summary */}
           <div>
-            <h2 className="font-serif text-base font-bold text-[#5B061E] uppercase tracking-wider border-b border-[#E5E7EB] pb-2">
+            <h2 className="font-serif text-base font-bold text-[#5B061E] dark:text-cyan-400 uppercase tracking-wider border-b border-[#E5E7EB] dark:border-slate-800 pb-2">
               1. Corporate Profile & Statutory Parameter Snapshot
             </h2>
 
@@ -157,47 +157,47 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({
 
           {/* Section 2: Real-Time Risk Exposure & Statutory Quantitative Matrix */}
           <div>
-            <h2 className="font-serif text-base font-bold text-[#5B061E] uppercase tracking-wider border-b border-[#E5E7EB] pb-2">
+            <h2 className="font-serif text-base font-bold text-[#5B061E] dark:text-cyan-400 uppercase tracking-wider border-b border-[#E5E7EB] dark:border-slate-800 pb-2">
               2. Quantitative Statutory Risk & Exposure Matrix
             </h2>
 
             <div className="mt-4 grid grid-cols-2 gap-4 text-xs sm:grid-cols-4">
-              <div className="rounded-xl border border-[#E5E7EB] p-3 text-center">
-                <span className="text-[#6B7280] text-[11px] block">Compliance Burden</span>
-                <span className="font-serif text-2xl font-bold text-[#5B061E]">
+              <div className="rounded-xl border border-[#E5E7EB] dark:border-slate-800 p-3 text-center">
+                <span className="text-[#6B7280] dark:text-slate-400 text-[11px] block">Compliance Burden</span>
+                <span className="font-serif text-2xl font-bold text-[#5B061E] dark:text-cyan-400">
                   {matrix.burdenIndex} / 100
                 </span>
-                <span className="block text-[10px] font-bold text-[#9B153B] uppercase mt-0.5">
+                <span className="block text-[10px] font-bold text-[#9B153B] dark:text-cyan-300 uppercase mt-0.5">
                   {matrix.burdenLevel} Risk Tier
                 </span>
               </div>
 
-              <div className="rounded-xl border border-[#E5E7EB] p-3 text-center">
-                <span className="text-[#6B7280] text-[11px] block">Estimated Legal Open</span>
-                <span className="font-serif text-2xl font-bold text-[#1E1E24]">
+              <div className="rounded-xl border border-[#E5E7EB] dark:border-slate-800 p-3 text-center">
+                <span className="text-[#6B7280] dark:text-slate-400 text-[11px] block">Estimated Legal Open</span>
+                <span className="font-serif text-2xl font-bold text-[#1E1E24] dark:text-white">
                   {matrix.setupDays} Days
                 </span>
-                <span className="block text-[10px] text-[#475569] mt-0.5">
+                <span className="block text-[10px] text-[#475569] dark:text-slate-400 mt-0.5">
                   Critical Path Windows
                 </span>
               </div>
 
-              <div className="rounded-xl border border-[#E5E7EB] p-3 text-center">
-                <span className="text-[#6B7280] text-[11px] block">Total Statutory Budget</span>
-                <span className="font-serif text-2xl font-bold text-[#1E1E24]">
+              <div className="rounded-xl border border-[#E5E7EB] dark:border-slate-800 p-3 text-center">
+                <span className="text-[#6B7280] dark:text-slate-400 text-[11px] block">Total Statutory Budget</span>
+                <span className="font-serif text-2xl font-bold text-[#1E1E24] dark:text-white">
                   ₹{matrix.totalBudget.toLocaleString('en-IN')}
                 </span>
-                <span className="block text-[10px] text-[#065F46] mt-0.5">
+                <span className="block text-[10px] text-[#065F46] dark:text-emerald-400 mt-0.5">
                   Govt: ₹{matrix.minGovtFee.toLocaleString('en-IN')} | Legal: ₹{matrix.minProfessionalFee.toLocaleString('en-IN')}
                 </span>
               </div>
 
-              <div className="rounded-xl border border-[#E5E7EB] p-3 text-center">
-                <span className="text-[#6B7280] text-[11px] block">Compliance Health</span>
-                <span className="font-serif text-2xl font-bold text-[#064E3B]">
+              <div className="rounded-xl border border-[#E5E7EB] dark:border-slate-800 p-3 text-center">
+                <span className="text-[#6B7280] dark:text-slate-400 text-[11px] block">Compliance Health</span>
+                <span className="font-serif text-2xl font-bold text-[#064E3B] dark:text-emerald-400">
                   {matrix.healthScore}%
                 </span>
-                <span className="block text-[10px] text-[#475569] mt-0.5">
+                <span className="block text-[10px] text-[#475569] dark:text-slate-400 mt-0.5">
                   {matrix.totalResolved} of {matrix.totalApplicable} Resolved
                 </span>
               </div>
@@ -206,7 +206,7 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({
 
           {/* Section 3: Statutory Master Compliance Roadmap Calendar */}
           <div>
-            <h2 className="font-serif text-base font-bold text-[#5B061E] uppercase tracking-wider border-b border-[#E5E7EB] pb-2">
+            <h2 className="font-serif text-base font-bold text-[#5B061E] dark:text-cyan-400 uppercase tracking-wider border-b border-[#E5E7EB] dark:border-slate-800 pb-2">
               3. Complete Phased Compliance Schedule & Filing Milestones
             </h2>
 
@@ -257,7 +257,7 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({
 
           {/* Section 4: Budgetary Fee Breakdown */}
           <div>
-            <h2 className="font-serif text-base font-bold text-[#5B061E] uppercase tracking-wider border-b border-[#E5E7EB] pb-2">
+            <h2 className="font-serif text-base font-bold text-[#5B061E] dark:text-cyan-400 uppercase tracking-wider border-b border-[#E5E7EB] dark:border-slate-800 pb-2">
               4. Budgetary Itemization: Official Government Fees vs Professional CA/CS Fees
             </h2>
 
@@ -359,7 +359,7 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 rounded-lg bg-[#5B061E] px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-[#420415]"
+              className="flex items-center gap-1.5 rounded-lg bg-[#5B061E] dark:bg-cyan-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-[#420415] dark:hover:bg-cyan-500"
             >
               <Printer className="h-4 w-4" />
               <span>Print / Download PDF</span>

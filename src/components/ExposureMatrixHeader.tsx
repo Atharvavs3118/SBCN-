@@ -36,11 +36,11 @@ export const ExposureMatrixHeader: React.FC<ExposureMatrixHeaderProps> = ({
         };
       case 'Critical':
         return {
-          bg: 'bg-[#FDF2F4]',
-          border: 'border-[#FECDD3]',
-          text: 'text-[#9B153B]',
-          badge: 'bg-[#5B061E] text-white',
-          bar: 'bg-[#5B061E]',
+          bg: 'bg-[#FDF2F4] dark:bg-cyan-950/40',
+          border: 'border-[#FECDD3] dark:border-cyan-800',
+          text: 'text-[#9B153B] dark:text-cyan-300',
+          badge: 'bg-[#5B061E] dark:bg-cyan-600 text-white',
+          bar: 'bg-[#5B061E] dark:bg-cyan-500',
         };
     }
   };
@@ -132,7 +132,7 @@ export const ExposureMatrixHeader: React.FC<ExposureMatrixHeaderProps> = ({
               <span className="text-xs font-medium text-[#6B7280]">{t('statBusinessDays', 'Business Days')}</span>
             </div>
             <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#475569]">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#5B061E]"></span>
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#5B061E] dark:bg-cyan-400"></span>
               <span>Phase 1 (2–5d) + Operational (10–25d)</span>
             </div>
             <p className="mt-1.5 text-[11px] text-[#6B7280]">
@@ -146,12 +146,12 @@ export const ExposureMatrixHeader: React.FC<ExposureMatrixHeaderProps> = ({
               <span className="text-xs font-medium tracking-wide text-[#6B7280] uppercase">
                 {t('statGovtBudget', 'Statutory Budget')}
               </span>
-              <span className="rounded bg-[#FDF2F4] px-1.5 py-0.5 text-[10px] font-semibold text-[#5B061E]">
+              <span className="rounded bg-[#FDF2F4] dark:bg-cyan-950/60 dark:text-cyan-300 px-1.5 py-0.5 text-[10px] font-semibold text-[#5B061E]">
                 ₹ {t('estimated', 'Estimated')}
               </span>
             </div>
             <div className="mt-2 flex items-baseline gap-1">
-              <span className="font-sans text-sm font-semibold text-[#5B061E]">₹</span>
+              <span className="font-sans text-sm font-semibold text-[#5B061E] dark:text-cyan-400">₹</span>
               <span className="font-serif text-3xl font-bold tracking-tight text-[#1E1E24]">
                 {matrix.totalBudget.toLocaleString('en-IN')}
               </span>

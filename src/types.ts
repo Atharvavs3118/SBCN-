@@ -95,6 +95,11 @@ export interface ComplianceItem {
   notes?: string;
 }
 
+export type LocationJurisdictionTier =
+  | 'Tier-1 Metro / Municipal Corporation'
+  | 'Small City / Municipality (Nagar Palika)'
+  | 'Rural / Gram Panchayat';
+
 export interface ProfileState {
   businessName: string;
   // 1. Business Type
@@ -102,6 +107,9 @@ export interface ProfileState {
   // 2. Location
   state: string;
   city: string;
+  locationTier?: LocationJurisdictionTier;
+  gramPanchayatName?: string;
+  localBodyName?: string;
   footprint: FootprintType;
   // 3. Number of Employees
   exactHeadcount: number;

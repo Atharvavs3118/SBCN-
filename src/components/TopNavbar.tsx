@@ -160,7 +160,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
             }`}
             title="Perform AI Consistency Audit on founding documents"
           >
-            <FileText className="h-3.5 w-3.5 text-[#5B061E] dark:text-rose-400" />
+            <FileText className="h-3.5 w-3.5 text-[#5B061E] dark:text-cyan-400" />
             <span className="hidden md:inline">{t('btnDocumentAuditor', 'Doc Auditor')}</span>
           </button>
 
@@ -199,7 +199,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
           <button
             id="nav-btn-export-dossier"
             onClick={onOpenDossier}
-            className="flex items-center gap-1.5 rounded-lg bg-[#5B061E] px-3 py-1.5 text-xs font-semibold text-white shadow-xs transition hover:bg-[#420415] active:scale-95"
+            className="flex items-center gap-1.5 rounded-lg bg-[#5B061E] dark:bg-cyan-600 dark:hover:bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-white shadow-xs transition hover:bg-[#420415] active:scale-95"
           >
             <Download className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{t('btnExecutiveDossier', 'Dossier')}</span>

@@ -24,7 +24,7 @@ import { LanguageSelector } from './LanguageSelector';
 import { HowItWorksModal } from './HowItWorksModal';
 
 interface LandingPageProps {
-  onGoToLogin: () => void;
+  onGoToLogin: (initialRegisterMode?: boolean) => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onGoToLogin }) => {
@@ -32,8 +32,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGoToLogin }) => {
   const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
 
   // Any button on landing page other than 'How It Works' redirects to login page
-  const handleOtherButtonClick = () => {
-    onGoToLogin();
+  const handleOtherButtonClick = (isRegister: boolean = false) => {
+    onGoToLogin(isRegister);
   };
 
   return (
@@ -85,7 +85,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGoToLogin }) => {
             {/* Sign In CTA */}
             <button
               id="landing-btn-signin"
-              onClick={handleOtherButtonClick}
+              onClick={() => handleOtherButtonClick(false)}
               className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition hover:bg-slate-100 dark:hover:bg-slate-800 ${
                 isDark ? 'border-slate-700 text-slate-200' : 'border-slate-300 text-slate-700'
               }`}
@@ -96,7 +96,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGoToLogin }) => {
             {/* Get Started CTA */}
             <button
               id="landing-btn-getstarted-nav"
-              onClick={handleOtherButtonClick}
+              onClick={() => handleOtherButtonClick(true)}
               className="flex items-center gap-1 rounded-lg bg-blue-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-700 active:scale-95"
             >
               <span>{t('btnGetStarted', 'Get Started')}</span>
@@ -140,7 +140,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGoToLogin }) => {
             {/* Start Business Setup -> Redirects to Login */}
             <button
               id="landing-btn-start-setup"
-              onClick={handleOtherButtonClick}
+              onClick={() => handleOtherButtonClick(true)}
               className="w-full sm:w-auto flex items-center justify-center gap-2.5 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-md shadow-blue-500/20 transition hover:bg-blue-700 active:scale-95"
             >
               <span>{t('btnStartBusinessSetup', 'Start Business Setup Guide')}</span>
@@ -164,7 +164,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGoToLogin }) => {
             {/* Launch Navigator -> Redirects to Login */}
             <button
               id="landing-btn-launch-navigator"
-              onClick={handleOtherButtonClick}
+              onClick={() => handleOtherButtonClick(false)}
               className={`w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border px-5 py-3 text-sm font-medium transition ${
                 isDark
                   ? 'border-blue-900/50 bg-blue-950/20 text-blue-300 hover:bg-blue-950/40'

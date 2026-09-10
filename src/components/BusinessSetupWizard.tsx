@@ -180,9 +180,17 @@ export const BusinessSetupWizard: React.FC<BusinessSetupWizardProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold mb-1.5 text-slate-700 dark:text-slate-300">
-                  Business / Company Name
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Business / Company Name
+                  </label>
+                  {initialProfile?.businessName && (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Existing Registered Entity
+                    </span>
+                  )}
+                </div>
                 <input
                   type="text"
                   value={formData.businessName}
@@ -194,6 +202,18 @@ export const BusinessSetupWizard: React.FC<BusinessSetupWizardProps> = ({
                       : 'border-slate-300 bg-slate-50 text-slate-900 focus:border-blue-600'
                   }`}
                 />
+                {initialProfile?.businessName && (
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center justify-between">
+                    <span>Active entity loaded. You can proceed with this company or edit if renaming.</span>
+                    <button
+                      type="button"
+                      onClick={onSkip}
+                      className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                    >
+                      Skip to Checklist →
+                    </button>
+                  </p>
+                )}
               </div>
 
               <div>
@@ -532,6 +552,127 @@ export const BusinessSetupWizard: React.FC<BusinessSetupWizardProps> = ({
                   </div>
                 </div>
               </div>
+
+              {/* Jurisdiction Tier: Metro vs Small City vs Gram Panchayat */}
+              <div>
+                <label className="block text-xs font-semibold mb-2 text-slate-700 dark:text-slate-300">
+                  Local Administrative Body / Jurisdiction Tier
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {(
+                    [
+                      {
+                        tier: 'Tier-1 Metro / Municipal Corporation',
+                        title: 'Tier-1 Metro City',
+                        desc: 'Municipal Corporation (BMC, BBMP, MCD, GHMC)',
+                        badge: 'Urban Corporation',
+                      },
+                      {
+                        tier: 'Small City / Municipality (Nagar Palika)',
+                        title: 'Small City / Town',
+                        desc: 'Municipality / Nagar Palika / Town Council',
+                        badge: 'Nagar Palika',
+                      },
+                      {
+                        tier: 'Rural / Gram Panchayat',
+                        title: 'Rural / Gram Panchayat',
+                        desc: 'Village Panchayat (Panchayati Raj Act)',
+                        badge: 'Gram Panchayat',
+                      },
+                    ] as const
+                  ).map((item) => {
+                    const isSelected = (formData.locationTier || 'Tier-1 Metro / Municipal Corporation') === item.tier;
+                    return (
+                      <button
+                        key={item.tier}
+                        type="button"
+                        onClick={() => updateForm({ locationTier: item.tier as any })}
+                        className={`rounded-xl border p-3 text-left transition ${
+                          isSelected
+                            ? isDark
+                              ? 'border-emerald-500 bg-emerald-950/40 text-emerald-300 ring-1 ring-emerald-500'
+                              : 'border-emerald-600 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-600'
+                            : isDark
+                            ? 'border-slate-800 bg-slate-800/60 text-slate-300 hover:border-slate-700'
+                            : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between font-semibold text-xs mb-1">
+                          <span>{item.title}</span>
+                          {isSelected && <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />}
+                        </div>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug">
+                          {item.desc}
+                        </p>
+                        <span className="mt-2 inline-block text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                          {item.badge}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Conditional Gram Panchayat or Small City input */}
+              {formData.locationTier === 'Rural / Gram Panchayat' && (
+                <div className={`rounded-xl border p-3.5 space-y-2 ${
+                  isDark ? 'border-amber-900/60 bg-amber-950/20 text-amber-200' : 'border-amber-200 bg-amber-50 text-amber-900'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4 text-amber-500" />
+                    <span className="text-xs font-bold">Gram Panchayat (Panchayati Raj Act) Details</span>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                      Gram Panchayat / Village Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.gramPanchayatName || ''}
+                      onChange={(e) => updateForm({ gramPanchayatName: e.target.value })}
+                      placeholder="e.g. Gram Panchayat Khed, Pune District"
+                      className={`w-full rounded-xl border p-2.5 text-xs font-semibold transition focus:outline-none ${
+                        isDark
+                          ? 'border-slate-700 bg-slate-800 text-white focus:border-amber-500'
+                          : 'border-slate-300 bg-white text-slate-900 focus:border-amber-600'
+                      }`}
+                    />
+                  </div>
+                  <p className="text-[10px] leading-relaxed opacity-90">
+                    💡 <strong>Statutory Exemption Notice:</strong> Commercial businesses in Gram Panchayat jurisdictions are governed by the State Panchayati Raj Act. They obtain a Gram Panchayat Trade NOC / Parwana instead of urban Municipal Corporation licenses, and are eligible for small business & rural enterprise fee waivers.
+                  </p>
+                </div>
+              )}
+
+              {formData.locationTier === 'Small City / Municipality (Nagar Palika)' && (
+                <div className={`rounded-xl border p-3.5 space-y-2 ${
+                  isDark ? 'border-blue-900/60 bg-blue-950/20 text-blue-200' : 'border-blue-200 bg-blue-50 text-blue-900'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4 text-blue-500" />
+                    <span className="text-xs font-bold">Small City Municipality (Nagar Palika / Parishad)</span>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                      Municipality / Nagar Palika Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.localBodyName || ''}
+                      onChange={(e) => updateForm({ localBodyName: e.target.value })}
+                      placeholder="e.g. Alwar Nagar Parishad, Kolhapur Nagar Palika"
+                      className={`w-full rounded-xl border p-2.5 text-xs font-semibold transition focus:outline-none ${
+                        isDark
+                          ? 'border-slate-700 bg-slate-800 text-white focus:border-blue-500'
+                          : 'border-slate-300 bg-white text-slate-900 focus:border-blue-600'
+                      }`}
+                    />
+                  </div>
+                  <p className="text-[10px] leading-relaxed opacity-90">
+                    💡 <strong>Simplified Licensing:</strong> Small city businesses enjoy streamlined municipal shop act clearances and lower statutory local cess compared to Tier-1 metropolitan corporations.
+                  </p>
+                </div>
+              )}
 
               {/* Online Delivery Activity */}
               <div className={`rounded-xl border p-4 transition ${

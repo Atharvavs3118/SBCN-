@@ -527,12 +527,12 @@ export const ParameterStudio: React.FC<ParameterStudioProps> = ({ profile, onCha
                     onClick={() => onChange({ revenueThreshold: rev.label })}
                     className={`rounded-lg border p-2.5 text-left transition ${
                       profile.revenueThreshold === rev.label
-                        ? 'border-[#5B061E] bg-[#FDF2F4] text-[#5B061E] ring-1 ring-[#5B061E]'
-                        : 'border-[#E5E7EB] bg-white text-[#374151] hover:bg-[#F9FAFB]'
+                        ? 'border-[#5B061E] dark:border-cyan-500 bg-[#FDF2F4] dark:bg-cyan-950/40 text-[#5B061E] dark:text-cyan-300 ring-1 ring-[#5B061E] dark:ring-cyan-500'
+                        : 'border-[#E5E7EB] dark:border-slate-800 bg-white dark:bg-slate-900 text-[#374151] dark:text-slate-300 hover:bg-[#F9FAFB] dark:hover:bg-slate-800'
                     }`}
                   >
-                    <div className="text-xs font-bold text-[#1E1E24]">{rev.label}</div>
-                    <div className="mt-0.5 text-[10px] text-[#6B7280]">{rev.subtitle}</div>
+                    <div className="text-xs font-bold text-[#1E1E24] dark:text-white">{rev.label}</div>
+                    <div className="mt-0.5 text-[10px] text-[#6B7280] dark:text-slate-400">{rev.subtitle}</div>
                   </button>
                 ))}
               </div>
@@ -541,10 +541,10 @@ export const ParameterStudio: React.FC<ParameterStudioProps> = ({ profile, onCha
             {/* Cross-Border Operations & Import/Export */}
             <div>
               <div className="flex items-center justify-between">
-                <span className="block text-xs font-semibold tracking-wide text-[#374151] uppercase">
+                <span className="block text-xs font-semibold tracking-wide text-[#374151] dark:text-slate-300 uppercase">
                   Cross-Border & Import/Export Activity
                 </span>
-                <span className="rounded bg-[#5B061E]/10 text-[#5B061E] px-1 py-0.2 text-[9px] font-bold">
+                <span className="rounded bg-[#5B061E]/10 dark:bg-cyan-950/60 text-[#5B061E] dark:text-cyan-300 px-1 py-0.2 text-[9px] font-bold">
                   Statutory Trigger
                 </span>
               </div>
@@ -587,8 +587,8 @@ export const ParameterStudio: React.FC<ParameterStudioProps> = ({ profile, onCha
                     }
                     className={`flex w-full items-center justify-between rounded-lg border p-2.5 text-left text-xs font-medium transition ${
                       profile.crossBorder === cb.id
-                        ? 'border-[#5B061E] bg-[#5B061E] text-white shadow-xs'
-                        : 'border-[#E5E7EB] bg-white text-[#374151] hover:bg-[#F9FAFB]'
+                        ? 'border-[#5B061E] dark:border-cyan-500 bg-[#5B061E] dark:bg-cyan-600 text-white shadow-xs'
+                        : 'border-[#E5E7EB] dark:border-slate-800 bg-white dark:bg-slate-900 text-[#374151] dark:text-slate-300 hover:bg-[#F9FAFB] dark:hover:bg-slate-800'
                     }`}
                   >
                     <span>{cb.label}</span>
@@ -647,7 +647,7 @@ export const ParameterStudio: React.FC<ParameterStudioProps> = ({ profile, onCha
         <button
           disabled={activeStep === 4}
           onClick={() => setActiveStep((prev) => (prev < 4 ? ((prev + 1) as 1 | 2 | 3 | 4) : 4))}
-          className="rounded-lg bg-[#5B061E] px-3.5 py-1.5 font-medium text-white shadow-xs transition hover:bg-[#420415] disabled:opacity-40"
+          className="rounded-lg bg-[#5B061E] dark:bg-cyan-600 px-3.5 py-1.5 font-medium text-white shadow-xs transition hover:bg-[#420415] dark:hover:bg-cyan-500 disabled:opacity-40"
         >
           Next
         </button>

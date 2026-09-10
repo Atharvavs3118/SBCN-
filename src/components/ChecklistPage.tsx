@@ -608,6 +608,75 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                       </div>
                     </div>
 
+                    {/* Local Jurisdiction Tier Selection */}
+                    <div>
+                      <label className="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">
+                        Local Body & Jurisdiction Tier
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        {[
+                          { id: 'Tier-1 Metro / Municipal Corporation', label: 'Tier-1 Metro City', note: 'Municipal Corp (BBMP, BMC, etc.)' },
+                          { id: 'Small City / Municipality (Nagar Palika)', label: 'Small City / Town', note: 'Nagar Palika / Parishad' },
+                          { id: 'Rural / Gram Panchayat', label: 'Rural / Gram Panchayat', note: 'Panchayati Raj Jurisdiction' },
+                        ].map((tier) => (
+                          <button
+                            key={tier.id}
+                            type="button"
+                            onClick={() => onProfileChange({ locationTier: tier.id as any })}
+                            className={`p-2 rounded-lg border text-left text-xs transition ${
+                              (profile.locationTier || 'Tier-1 Metro / Municipal Corporation') === tier.id
+                                ? isDark
+                                  ? 'border-blue-500 bg-blue-950/40 text-blue-200 ring-1 ring-blue-500'
+                                  : 'border-blue-600 bg-blue-50 text-blue-900 ring-1 ring-blue-600'
+                                : isDark
+                                ? 'border-slate-800 bg-slate-800/40 text-slate-300'
+                                : 'border-slate-200 bg-slate-50 text-slate-700'
+                            }`}
+                          >
+                            <div className="font-bold flex items-center justify-between">
+                              <span>{tier.label}</span>
+                              {(profile.locationTier || 'Tier-1 Metro / Municipal Corporation') === tier.id && (
+                                <Check className="h-3 w-3 text-blue-500" />
+                              )}
+                            </div>
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400">{tier.note}</div>
+                          </button>
+                        ))}
+                      </div>
+
+                      {profile.locationTier === 'Rural / Gram Panchayat' && (
+                        <div className="mt-2.5 p-2.5 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 text-xs text-amber-900 dark:text-amber-200">
+                          <label className="block text-[11px] font-bold mb-1">Gram Panchayat / Village Name:</label>
+                          <input
+                            type="text"
+                            value={profile.gramPanchayatName || ''}
+                            onChange={(e) => onProfileChange({ gramPanchayatName: e.target.value })}
+                            placeholder="e.g. Gram Panchayat Khed"
+                            className="w-full rounded-md border p-1.5 text-xs bg-white dark:bg-slate-900 border-amber-400 dark:border-amber-700 text-slate-900 dark:text-white"
+                          />
+                          <p className="text-[10px] mt-1 text-amber-800 dark:text-amber-300">
+                            🌾 Gram Panchayat businesses obtain a local Trade NOC / Parwana under the Panchayati Raj Act and are exempt from metropolitan Municipal Corporation shop acts.
+                          </p>
+                        </div>
+                      )}
+
+                      {profile.locationTier === 'Small City / Municipality (Nagar Palika)' && (
+                        <div className="mt-2.5 p-2.5 rounded-lg border border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30 text-xs text-blue-900 dark:text-blue-200">
+                          <label className="block text-[11px] font-bold mb-1">Small City / Nagar Palika Name:</label>
+                          <input
+                            type="text"
+                            value={profile.localBodyName || ''}
+                            onChange={(e) => onProfileChange({ localBodyName: e.target.value })}
+                            placeholder="e.g. Alwar Nagar Parishad"
+                            className="w-full rounded-md border p-1.5 text-xs bg-white dark:bg-slate-900 border-blue-400 dark:border-blue-700 text-slate-900 dark:text-white"
+                          />
+                          <p className="text-[10px] mt-1 text-blue-800 dark:text-blue-300">
+                            🏛️ Streamlined registration and lower fees under the local municipality / town council regulations.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
                     {/* Statutory Summary for Selected Sector */}
                     <div
                       className={`p-3.5 rounded-xl border text-xs leading-relaxed ${
@@ -730,9 +799,54 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                     </p>
                   </div>
 
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                    6 Certifications Required
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCertStatuses((prev) => ({
+                          ...prev,
+                          gst: { status: prev.gst?.status || 'Application in Progress', refNumber: prev.gst?.refNumber || profile.gstNumber || '' },
+                          udyam: { status: prev.udyam?.status || 'Granted / Active', refNumber: prev.udyam?.refNumber || 'UDYAM-MSME-APPLIED' },
+                          shopAct: { status: 'Not Applicable (Small Business Exemption)', refNumber: 'N/A - EXEMPT' },
+                          panTan: { status: prev.panTan?.status || 'Granted / Active', refNumber: prev.panTan?.refNumber || '' },
+                          pTax: { status: 'Not Applicable (Small Business Exemption)', refNumber: 'N/A - EXEMPT' },
+                          sectorCert: { status: 'Not Applicable (Small Business Exemption)', refNumber: 'N/A - EXEMPT' },
+                        }));
+                      }}
+                      className="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>Small Business Mode (GSTIN + Udyam Only)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCertStatuses({
+                          gst: { status: profile.gstVerified ? 'Granted / Active' : 'Application in Progress', refNumber: profile.gstNumber || '' },
+                          udyam: { status: 'Granted / Active', refNumber: 'UDYAM-KR-03-0098712' },
+                          shopAct: { status: 'Application in Progress', refNumber: 'BLR/KA/2026/9421' },
+                          panTan: { status: 'Granted / Active', refNumber: 'BLRV09124K' },
+                          pTax: { status: 'Not Started', refNumber: '' },
+                          sectorCert: { status: 'Application in Progress', refNumber: '' },
+                        });
+                      }}
+                      className="text-xs font-medium px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                    >
+                      Standard All-Filings
+                    </button>
+                  </div>
+                </div>
+
+                {/* Small Business Advisory Banner */}
+                <div className={`mt-4 rounded-xl border p-3 text-xs flex items-start gap-2.5 ${
+                  isDark ? 'border-emerald-900/60 bg-emerald-950/20 text-emerald-300' : 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                }`}>
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold">Small Business Compliance Rule: </span>
+                    Under Indian MSME and municipal provisions, small businesses and micro-enterprises primarily require only <strong>GSTIN</strong> and <strong>Udyam MSME</strong>. You can mark Shop Act, Professional Tax, or other sector permits as <em>"Not Applicable (Small Business Exemption)"</em> below without penalty.
+                  </div>
                 </div>
 
                 {/* Certificate List */}
@@ -745,6 +859,7 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                       portalUrl: 'https://www.gst.gov.in',
                       tat: '3–5 Business Days',
                       mandatory: true,
+                      canBeNA: false,
                       desc: 'Mandatory for interstate supply, e-commerce, and entities crossing ₹20L/₹40L threshold.',
                     },
                     {
@@ -754,16 +869,29 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                       portalUrl: 'https://udyamregistration.gov.in',
                       tat: 'Instant / 1 Day',
                       mandatory: true,
+                      canBeNA: false,
                       desc: 'Enables 1% interest subvention, 80% patent fee rebate, and protection against delayed buyer payments under Section 15.',
                     },
                     {
                       key: 'shopAct',
-                      title: 'Shops & Commercial Establishments Act License / Trade License',
-                      act: `${profile.state} Shops & Establishments Act`,
+                      title:
+                        profile.locationTier === 'Rural / Gram Panchayat'
+                          ? 'Gram Panchayat Trade NOC / Parwana (or Not Applicable)'
+                          : profile.locationTier === 'Small City / Municipality (Nagar Palika)'
+                          ? 'Small City Municipality / Nagar Palika Trade License'
+                          : 'Shops & Commercial Establishments Act License / Trade License',
+                      act:
+                        profile.locationTier === 'Rural / Gram Panchayat'
+                          ? `${profile.state} Panchayati Raj Act`
+                          : `${profile.state} Shops & Establishments Act`,
                       portalUrl: regulatoryPortals[3]?.url || 'https://www.mca.gov.in',
                       tat: '5–7 Business Days',
-                      mandatory: true,
-                      desc: 'Compulsory municipal registration validating commercial business address, working hours, and employee headcount.',
+                      mandatory: profile.locationTier !== 'Rural / Gram Panchayat',
+                      canBeNA: true,
+                      desc:
+                        profile.locationTier === 'Rural / Gram Panchayat'
+                          ? 'Gram Panchayat rural businesses are governed by the Panchayati Raj Act. Municipal Shop Act is NOT applicable; obtain village trade NOC or rely on Udyam.'
+                          : 'Validates commercial business address and working hours. Small businesses with <5 employees in many states are exempt.',
                     },
                     {
                       key: 'panTan',
@@ -772,6 +900,7 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                       portalUrl: 'https://www.onlineservices.nsdl.com',
                       tat: 'Bundled with Incorporation',
                       mandatory: true,
+                      canBeNA: false,
                       desc: 'Corporate tax identity and mandatory TAN for deducting Tax Deducted at Source (TDS) on contracts and payroll.',
                     },
                     {
@@ -781,7 +910,8 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                       portalUrl: regulatoryPortals[4]?.url || 'https://www.gst.gov.in',
                       tat: '3–4 Business Days',
                       mandatory: profile.exactHeadcount > 0,
-                      desc: 'PTEC for company director liability; PTRC for employer deducting monthly professional tax from staff salaries.',
+                      canBeNA: true,
+                      desc: 'PTEC for company director liability; PTRC for employer deducting monthly professional tax from staff salaries. Not applicable for zero-employee solo ventures.',
                     },
                     {
                       key: 'sectorCert',
@@ -806,22 +936,33 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                           ? 'https://cpcb.nic.in'
                           : 'https://www.gst.gov.in',
                       tat: '7–14 Business Days',
-                      mandatory: true,
-                      desc: 'Sector-specific operating permit required before commencing commercial client invoicing.',
+                      mandatory: false,
+                      canBeNA: true,
+                      desc: 'Sector-specific operating permit. Small businesses without exports or heavy equipment can mark as Not Applicable.',
                     },
                   ].map((cert) => {
                     const current = certStatuses[cert.key] || { status: 'Not Started', refNumber: '' };
+                    const isNA = current.status === 'Not Applicable (Small Business Exemption)';
+
                     return (
-                      <div key={cert.key} className="py-4 space-y-2">
+                      <div key={cert.key} className={`py-4 space-y-2 ${isNA ? 'opacity-80' : ''}`}>
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-xs text-slate-900 dark:text-white">
+                              <span className={`font-bold text-xs ${isNA ? 'line-through text-slate-500' : 'text-slate-900 dark:text-white'}`}>
                                 {cert.title}
                               </span>
-                              {cert.mandatory && (
-                                <span className="rounded bg-rose-100 dark:bg-rose-950 px-1.5 py-0.2 text-[9px] font-bold text-rose-700 dark:text-rose-300">
+                              {isNA ? (
+                                <span className="rounded bg-slate-200 dark:bg-slate-800 px-2 py-0.5 text-[9px] font-bold text-slate-700 dark:text-slate-300">
+                                  Not Applicable (Exempt)
+                                </span>
+                              ) : cert.mandatory ? (
+                                <span className="rounded bg-rose-100 dark:bg-cyan-950 px-1.5 py-0.2 text-[9px] font-bold text-rose-700 dark:text-cyan-300">
                                   Mandatory
+                                </span>
+                              ) : (
+                                <span className="rounded bg-blue-100 dark:bg-blue-950 px-1.5 py-0.2 text-[9px] font-bold text-blue-700 dark:text-blue-300">
+                                  Optional / Conditional
                                 </span>
                               )}
                             </div>
@@ -830,15 +971,45 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                             </div>
                           </div>
 
-                          <a
-                            href={cert.portalUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400"
-                          >
-                            <span>Apply on Portal</span>
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
+                          <div className="flex items-center gap-3">
+                            {cert.canBeNA && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (isNA) {
+                                    setCertStatuses((prev) => ({
+                                      ...prev,
+                                      [cert.key]: { status: 'Application in Progress', refNumber: '' },
+                                    }));
+                                  } else {
+                                    setCertStatuses((prev) => ({
+                                      ...prev,
+                                      [cert.key]: { status: 'Not Applicable (Small Business Exemption)', refNumber: 'N/A - EXEMPT' },
+                                    }));
+                                  }
+                                }}
+                                className={`text-[11px] font-semibold px-2 py-1 rounded transition cursor-pointer ${
+                                  isNA
+                                    ? 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 hover:bg-blue-200'
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                                }`}
+                              >
+                                {isNA ? 'Set as Applicable' : 'Mark Not Applicable'}
+                              </button>
+                            )}
+
+                            {!isNA && (
+                              <a
+                                href={cert.portalUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400"
+                              >
+                                <span>Apply on Portal</span>
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            )}
+                          </div>
                         </div>
 
                         <p className="text-xs text-slate-600 dark:text-slate-300">{cert.desc}</p>
@@ -851,7 +1022,11 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                               onChange={(e) =>
                                 setCertStatuses((prev) => ({
                                   ...prev,
-                                  [cert.key]: { ...current, status: e.target.value },
+                                  [cert.key]: {
+                                    ...current,
+                                    status: e.target.value,
+                                    refNumber: e.target.value === 'Not Applicable (Small Business Exemption)' ? 'N/A - EXEMPT' : current.refNumber,
+                                  },
                                 }))
                               }
                               className="w-full text-xs font-semibold p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
@@ -860,6 +1035,11 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                               <option value="Application in Progress">Application in Progress</option>
                               <option value="Under Scrutiny / Review">Under Scrutiny / Review</option>
                               <option value="Granted / Active">Granted / Active</option>
+                              {cert.canBeNA && (
+                                <option value="Not Applicable (Small Business Exemption)">
+                                  Not Applicable (Small Business Exemption)
+                                </option>
+                              )}
                             </select>
                           </div>
 
@@ -868,14 +1048,19 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                             <input
                               type="text"
                               value={current.refNumber}
+                              disabled={isNA}
                               onChange={(e) =>
                                 setCertStatuses((prev) => ({
                                   ...prev,
                                   [cert.key]: { ...current, refNumber: e.target.value },
                                 }))
                               }
-                              placeholder="e.g. ARN-AA290226019842"
-                              className="w-full text-xs font-semibold p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                              placeholder={isNA ? 'Exempt under MSME provisions' : 'e.g. ARN-AA290226019842'}
+                              className={`w-full text-xs font-semibold p-1.5 rounded-lg border ${
+                                isNA
+                                  ? 'border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800/40 text-slate-400 cursor-not-allowed'
+                                  : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white'
+                              }`}
                             />
                           </div>
                         </div>
@@ -1199,8 +1384,8 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                     </button>
 
                     {verificationError && (
-                      <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-xs text-rose-800 dark:text-rose-300 flex items-start gap-2">
-                        <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-rose-600" />
+                      <div className="p-3 rounded-xl bg-rose-50 dark:bg-cyan-950/40 border border-rose-200 dark:border-cyan-800 text-xs text-rose-800 dark:text-cyan-300 flex items-start gap-2">
+                        <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-rose-600 dark:text-cyan-400" />
                         <div>{verificationError}</div>
                       </div>
                     )}
@@ -1220,7 +1405,7 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                               ? 'border-emerald-800/80 bg-emerald-950/20'
                               : 'border-emerald-200 bg-emerald-50/70'
                             : isDark
-                            ? 'border-rose-900/80 bg-rose-950/30'
+                            ? 'border-cyan-800/80 bg-cyan-950/30'
                             : 'border-rose-200 bg-rose-50/80'
                         }`}
                       >
@@ -1232,7 +1417,7 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                                 <CheckCircle2 className="h-5 w-5" />
                               </div>
                             ) : (
-                              <div className="h-8 w-8 rounded-lg bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                              <div className="h-8 w-8 rounded-lg bg-rose-600 dark:bg-cyan-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                                 <XCircle className="h-5 w-5" />
                               </div>
                             )}
@@ -1251,7 +1436,7 @@ export const ChecklistPage: React.FC<ChecklistPageProps> = ({
                               className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${
                                 verificationResult.isValid
                                   ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200'
-                                  : 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200'
+                                  : 'bg-rose-100 text-rose-800 dark:bg-cyan-950 dark:text-cyan-200'
                               }`}
                             >
                               {verificationResult.confidenceScore || 95}% Match

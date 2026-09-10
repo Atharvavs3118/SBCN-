@@ -128,7 +128,7 @@ export const DocumentAuditorModal: React.FC<DocumentAuditorModalProps> = ({
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-[#E5E7EB] bg-[#FBFBFA] px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#5B061E] text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#5B061E] dark:bg-cyan-600 text-white">
               <FileCheck className="h-5 w-5" />
             </div>
             <div>
@@ -136,7 +136,7 @@ export const DocumentAuditorModal: React.FC<DocumentAuditorModalProps> = ({
                 <h3 className="font-serif text-lg font-bold text-[#1E1E24]">
                   AI Document Readiness & Risk Auditor
                 </h3>
-                <span className="rounded bg-[#5B061E]/10 px-2 py-0.5 text-[10px] font-bold text-[#5B061E] uppercase">
+                <span className="rounded bg-[#5B061E]/10 dark:bg-cyan-950/60 dark:text-cyan-300 px-2 py-0.5 text-[10px] font-bold text-[#5B061E] uppercase">
                   Workflow 3
                 </span>
               </div>
@@ -265,7 +265,7 @@ export const DocumentAuditorModal: React.FC<DocumentAuditorModalProps> = ({
               <button
                 disabled={isAuditing}
                 onClick={() => handleRunAudit()}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#5B061E] py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-[#420415] disabled:opacity-50"
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#5B061E] dark:bg-cyan-600 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-[#420415] dark:hover:bg-cyan-500 disabled:opacity-50"
               >
                 {isAuditing ? (
                   <>
@@ -375,7 +375,7 @@ export const DocumentAuditorModal: React.FC<DocumentAuditorModalProps> = ({
           </span>
           <button
             onClick={onClose}
-            className="rounded-lg bg-[#5B061E] px-4 py-2 font-medium text-white transition hover:bg-[#420415]"
+            className="rounded-lg bg-[#5B061E] dark:bg-cyan-600 px-4 py-2 font-medium text-white transition hover:bg-[#420415] dark:hover:bg-cyan-500"
           >
             Close Auditor
           </button>

@@ -27,7 +27,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', showLa
       id="theme-toggle-btn"
       onClick={toggleTheme}
       type="button"
-      className={`relative inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#5B061E]/20 dark:focus:ring-rose-500/20 ${
+      className={`relative inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#5B061E]/20 dark:focus:ring-cyan-400/30 ${
         isDark
           ? 'border-slate-700 bg-slate-800/90 text-amber-300 hover:bg-slate-700 hover:text-amber-200 shadow-2xs'
           : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-2xs'

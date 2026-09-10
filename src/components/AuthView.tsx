@@ -24,13 +24,22 @@ import { ThemeToggle } from './ThemeToggle';
 import { LanguageSelector } from './LanguageSelector';
 
 interface AuthViewProps {
-  onSuccess: () => void;
+  onSuccess: (isExistingCompany?: boolean, companyName?: string) => void;
   onBackToLanding: () => void;
+  existingCompanyName?: string;
+  hasExistingProfile?: boolean;
+  initialRegisterMode?: boolean;
 }
 
-export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, onBackToLanding }) => {
+export const AuthView: React.FC<AuthViewProps> = ({
+  onSuccess,
+  onBackToLanding,
+  existingCompanyName = 'Vanguard Technologies',
+  hasExistingProfile = true,
+  initialRegisterMode = false,
+}) => {
   const { isDark, t, loginAsFounder } = useApp();
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(initialRegisterMode);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
 
@@ -38,17 +47,24 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, onBackToLanding }
   const [email, setEmail] = useState('atharvasankhe004@gmail.com');
   const [password, setPassword] = useState('••••••••••••');
   const [fullName, setFullName] = useState('Atharva Sankhe');
-  const [companyName, setCompanyName] = useState('Vanguard Technologies');
+  const [companyName, setCompanyName] = useState(existingCompanyName || 'Vanguard Technologies');
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     loginAsFounder(email, fullName);
-    onSuccess();
+    if (!isRegister) {
+      // Logging in with existing company - DO NOT ask for new company name
+      onSuccess(true, companyName || existingCompanyName);
+    } else {
+      // Registering a brand new company
+      onSuccess(false, companyName);
+    }
   };
 
   const handleQuickDemo = () => {
     loginAsFounder('atharvasankhe004@gmail.com', 'Atharva Sankhe');
-    onSuccess();
+    // Existing company fast login
+    onSuccess(true, existingCompanyName || 'Vanguard Technologies');
   };
 
   return (
@@ -445,6 +461,27 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, onBackToLanding }
 
           {/* Main Auth Form */}
           <form onSubmit={handleLoginSubmit} className="space-y-4">
+            {!isRegister && (
+              <div className="rounded-xl border border-blue-100 dark:border-blue-900/60 bg-blue-50/70 dark:bg-blue-950/40 p-3 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white font-bold text-xs">
+                    {(existingCompanyName || companyName).slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 uppercase tracking-wider block">
+                      Active Business Entity
+                    </span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">
+                      {existingCompanyName || companyName}
+                    </span>
+                  </div>
+                </div>
+                <span className="rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 text-[10px] font-bold">
+                  Existing Entity
+                </span>
+              </div>
+            )}
+
             {isRegister && (
               <>
                 {/* Full Name */}

@@ -86,6 +86,7 @@ function AppInner() {
   const [isAIDeskOpen, setIsAIDeskOpen] = useState(false);
   const [isDossierOpen, setIsDossierOpen] = useState(false);
   const [selectedItemForAI, setSelectedItemForAI] = useState<ComplianceItem | null>(null);
+  const [authDefaultRegister, setAuthDefaultRegister] = useState(false);
 
   // Sync to local storage
   useEffect(() => {
@@ -150,7 +151,10 @@ function AppInner() {
   if (currentView === 'LANDING') {
     return (
       <LandingPage
-        onGoToLogin={() => setCurrentView('LOGIN')}
+        onGoToLogin={(initialRegister = false) => {
+          setAuthDefaultRegister(initialRegister);
+          setCurrentView('LOGIN');
+        }}
       />
     );
   }
@@ -159,7 +163,22 @@ function AppInner() {
   if (currentView === 'LOGIN') {
     return (
       <AuthView
-        onSuccess={() => setCurrentView('WIZARD')}
+        existingCompanyName={profile.businessName}
+        hasExistingProfile={Boolean(profile.businessName)}
+        initialRegisterMode={authDefaultRegister}
+        onSuccess={(isExistingCompany = true, selectedCompanyName) => {
+          if (selectedCompanyName) {
+            setProfile((prev) => ({ ...prev, businessName: selectedCompanyName }));
+          }
+          if (isExistingCompany) {
+            // User logged in with existing company - avoid asking for new company name!
+            // Route straight to Dashboard directly without asking for new company name or setup
+            setCurrentView('DASHBOARD');
+          } else {
+            // Registering a brand new company -> goes to setup wizard
+            setCurrentView('WIZARD');
+          }
+        }}
         onBackToLanding={() => setCurrentView('LANDING')}
       />
     );
@@ -221,8 +240,6 @@ function AppInner() {
         onOpenWizard={() => setCurrentView('WIZARD')}
         onGoToLanding={() => setCurrentView('LANDING')}
         onSelectPreset={handleSelectPreset}
-        onOpenChecklist={() => setCurrentView('CHECKLIST')}
-        onOpenProfile={() => setCurrentView('PROFILE')}
       />
 
       {/* AI Document Readiness & Risk Auditor Modal */}

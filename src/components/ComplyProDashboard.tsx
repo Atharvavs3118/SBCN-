@@ -137,7 +137,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
       categoryColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300',
       dueDate: '15 Sep 2025',
       status: 'Overdue',
-      statusColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400',
+      statusColor: 'bg-rose-100 text-rose-700 dark:bg-cyan-950/60 dark:text-cyan-400',
       authority: 'Income Tax Dept (ITR-6)',
       details: 'Statutory deadline for filing corporate annual tax return. Failure triggers Sec 234F penalties up to ₹50,000 and interest.',
     },
@@ -324,7 +324,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                 <Bell className="h-4 w-4 text-slate-400" />
                 <span>Alerts</span>
               </div>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-xs">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 dark:bg-cyan-500 text-[10px] font-bold text-white shadow-xs">
                 3
               </span>
             </button>
@@ -401,7 +401,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
               aria-label="Notifications"
             >
               <Bell className="h-5 w-5" />
-              <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white">
+              <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 dark:bg-cyan-500 text-[9px] font-bold text-white">
                 3
               </span>
             </button>
@@ -439,35 +439,11 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                     type="button"
                     onClick={() => {
                       setIsProfileMenuOpen(false);
-                      if (onOpenChecklist) onOpenChecklist();
-                      else onOpenWizard();
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition text-blue-600 dark:text-blue-400 font-semibold"
-                  >
-                    <CheckSquare className="h-4 w-4 text-blue-500" />
-                    <span>Statutory Checklist (4 Checkpoints)</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsProfileMenuOpen(false);
-                      if (onOpenProfile) onOpenProfile();
-                      else onOpenWizard();
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition text-slate-700 dark:text-slate-200"
-                  >
-                    <User className="h-4 w-4 text-indigo-500" />
-                    <span>Enterprise Profile & Assets</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsProfileMenuOpen(false);
                       onOpenWizard();
                     }}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition"
                   >
-                    <Sliders className="h-4 w-4 text-slate-400" />
+                    <Sliders className="h-4 w-4 text-blue-500" />
                     <span>Run Setup Wizard</span>
                   </button>
                   <button
@@ -499,7 +475,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                       setIsProfileMenuOpen(false);
                       logout();
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-left transition font-medium"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-rose-600 dark:text-cyan-400 hover:bg-rose-50 dark:hover:bg-cyan-950/40 text-left transition font-medium"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Sign Out</span>
@@ -579,7 +555,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
 
                         {/* Metric 4 */}
                         <div className="flex items-center gap-2.5">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-500/20 text-rose-400 backdrop-blur-xs">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-500/20 dark:bg-cyan-500/20 text-rose-400 dark:text-cyan-300 backdrop-blur-xs">
                             <AlertCircle className="h-4 w-4" />
                           </div>
                           <div>
@@ -590,18 +566,18 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                       </div>
                     </div>
 
-                    {/* Right Readiness Circular Progress Ring (Visible on Mobile & Desktop) */}
-                    <div className="flex flex-col items-center justify-center text-center p-3.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md shrink-0 self-center md:self-auto">
+                    {/* Right Shield Graphic & Mini Readiness Progress Ring */}
+                    <div className="hidden md:flex flex-col items-center justify-center text-center p-3.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md">
                       <CircularProgressRing
                         score={stats.readinessScore}
-                        size={88}
-                        strokeWidth={8}
+                        size={84}
+                        strokeWidth={7}
                         label="Score"
                         showPill={false}
                       />
-                      <span className="text-[11px] font-bold text-white mt-1">Compliance Readiness</span>
+                      <span className="text-[11px] font-bold text-white mt-1">Readiness Score</span>
                       <span className="text-[10px] text-blue-200">
-                        {stats.completed} of {stats.total} Checked ({stats.readinessScore}%)
+                        {stats.completed} of {stats.total} Checked
                       </span>
                     </div>
                   </div>
@@ -674,7 +650,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                               ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
                               : matrix.readinessBreakdown.riskTier === 'MODERATE'
                               ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
-                              : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                              : 'bg-rose-100 text-rose-800 dark:bg-cyan-950 dark:text-cyan-300'
                           }`}>
                             {matrix.readinessBreakdown.riskTier} RISK TIER
                           </span>
@@ -687,7 +663,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                       <div className="flex items-center gap-4">
                         <div className="text-right">
                           <div className="text-[10px] uppercase font-bold text-slate-400">Estimated Penalty Exposure</div>
-                          <div className="text-sm font-extrabold text-rose-600 dark:text-rose-400 font-mono">
+                          <div className="text-sm font-extrabold text-rose-600 dark:text-cyan-400 font-mono">
                             ₹{matrix.readinessBreakdown.estimatedPenaltyExposureInINR.toLocaleString('en-IN')}
                           </div>
                         </div>
@@ -876,7 +852,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                       ESG, Pollution Norms
                     </p>
                     <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                      <span className="inline-flex items-center rounded-full bg-rose-50 dark:bg-rose-950/60 px-2.5 py-0.5 text-[10px] font-bold text-rose-600 dark:text-rose-400">
+                      <span className="inline-flex items-center rounded-full bg-rose-50 dark:bg-cyan-950/60 px-2.5 py-0.5 text-[10px] font-bold text-rose-600 dark:text-cyan-400">
                         At Risk
                       </span>
                       <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition" />
@@ -1006,7 +982,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
                     transition={{ duration: 0.2 }}
                     className="flex items-center gap-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 p-4 shadow-2xs"
                   >
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-100 dark:bg-cyan-950/60 text-rose-600 dark:text-cyan-400">
                       <AlertTriangle className="h-5 w-5" />
                     </div>
                     <div>
@@ -1330,7 +1306,7 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
               </div>
 
               <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xs">
-                <div className="flex items-center gap-2.5 text-rose-600 dark:text-rose-400 mb-2">
+                <div className="flex items-center gap-2.5 text-rose-600 dark:text-cyan-400 mb-2">
                   <Leaf className="h-5 w-5" />
                   <h2 className="text-sm font-bold">State Pollution Control Acts</h2>
                 </div>
@@ -1355,18 +1331,18 @@ export const ComplyProDashboard: React.FC<ComplyProDashboardProps> = ({
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-start gap-4 rounded-2xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-950/20 p-5">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-white shadow-xs">
+              <div className="flex items-start gap-4 rounded-2xl border border-rose-200 dark:border-cyan-800/60 bg-rose-50/50 dark:bg-cyan-950/30 p-5">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500 dark:bg-cyan-600 text-white shadow-xs">
                   <AlertCircle className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-bold text-rose-900 dark:text-rose-200">
+                    <h2 className="text-sm font-bold text-rose-900 dark:text-cyan-200">
                       Income Tax Annual Return (ITR-6) Overdue
                     </h2>
-                    <span className="text-[11px] font-bold text-rose-600 dark:text-rose-400">Overdue by 3 days</span>
+                    <span className="text-[11px] font-bold text-rose-600 dark:text-cyan-400">Overdue by 3 days</span>
                   </div>
-                  <p className="mt-1 text-xs text-rose-800 dark:text-rose-300">
+                  <p className="mt-1 text-xs text-rose-800 dark:text-cyan-300">
                     Statutory deadline was 15 Sep 2025. Failure to file incurs fee under Sec 234F plus 1% per month interest under Sec 234A.
                   </p>
                 </div>
